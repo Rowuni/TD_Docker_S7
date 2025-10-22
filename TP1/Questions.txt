@@ -59,6 +59,8 @@ Copy the source code of the application into the working directory.
 RUN mvn package -DskipTests
 Build the application using Maven, packaging it into a JAR file while skipping tests to speed up the build process.
 
+
+
 Step 2: Runtime
 FROM eclipse-temurin:21-jre-alpine
 Use the Eclipse Temurin JRE 21 Alpine image as the base for the runtime environment, which is lighter than the JDK image.
@@ -72,4 +74,3 @@ Copy the built JAR file from the "myapp-build" stage into the runtime image.
 
 ENTRYPOINT ["java", "-jar", "myapp.jar"]
 Define the command to run the application when the container starts, executing the JAR file with Java.
-

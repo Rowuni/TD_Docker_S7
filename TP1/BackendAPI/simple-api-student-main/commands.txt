@@ -13,8 +13,8 @@ Start-Sleep -Seconds 10
 cd ../BackendAPI/simple-api-student-main
 docker build -t backend-api .
 
-# Étape 5 : Démarrer l'API backend connectée à la base de données
-docker run -d --name backend-api --network app-network -p 8080:8080 backend-api
+# Étape 5 : Démarrer l'API backend avec les variables d'environnement du fichier .env
+docker run -d --name backend-api --network app-network -p 8080:8080 --env-file .env backend-api
 
 # Étape 6 : Attendre que l'API démarre (environ 10 secondes)
 Start-Sleep -Seconds 10
