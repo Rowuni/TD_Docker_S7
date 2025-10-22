@@ -1,0 +1,75 @@
+1-1 For which reason is it better to run the container with a flag -e to give the environment variables rather than put them directly in the Dockerfile?
+
+It is better to use the -e flag to set environment variables when running a container because it allows for greater flexibility and security. 
+By using the -e flag, you can easily change the environment variables without needing to modify the Dockerfile and rebuild the image. 
+This is particularly useful for sensitive information like database credentials, as it prevents hardcoding them into the Dockerfile, reducing the risk of exposing them in version control systems. 
+Additionally, it allows for different configurations in different environments (development, testing, production) without changing the Docker image itself.
+
+
+1-2 Why do we need a volume to be attached to our postgres container?
+
+A volume is needed to be attached to a Postgres container to ensure data persistence.
+Without a volume, any data stored in the container's filesystem would be lost when the container is stopped or removed. 
+By using a volume, the data is stored outside the container's lifecycle, allowing it to persist even if the container is recreated. 
+This is crucial for databases like Postgres, where data integrity and availability are paramount.
+
+
+1-3 Document your database container essentials: commands and Dockerfile.
+
+Dockerfile:
+
+FROM postgres:17.2-alpine
+ENV POSTGRES_DB=db \
+   POSTGRES_USER=usr \
+   POSTGRES_PASSWORD=pwd
+COPY CreateScheme.sql /docker-entrypoint-initdb.d/01-create-scheme.sql
+COPY InsertData.sql /docker-entrypoint-initdb.d/02-insert-data.sql
+
+Commands to build and run the container:
+
+docker build -t mon-postgres -f TP1/Database/Dockerfile .
+docker run -d --name postgres-db --network app-network -p 5432:5432 mon-postgres
+
+
+1-4 Why do we need a multistage build? And explain each step of this dockerfile.
+
+Multistage builds allow us to reduce the size of the final Docker image by separating the build environment from the runtime environment.
+The security and performance of the final image are improved because it only contains the necessary components to run the application, without any build tools or dependencies.
+
+Step 1: Build
+FROM eclipse-temurin:21-jdk-alpine AS myapp-build
+
+Use the Eclipse Temurin JDK 21 Alpine image as the base for building the application, and name this stage "myapp-build".
+
+ENV MYAPP_HOME=/opt/myapp
+Set an environment variable MYAPP_HOME to specify the application home directory. Facilitates easier management of file paths.
+
+WORKDIR $MYAPP_HOME
+Set the working directory to MYAPP_HOME for subsequent commands.
+
+RUN apk add --no-cache maven
+Install maven in the build environment to handle Java project dependencies and build processes.
+
+COPY pom.xml .
+Copy the Maven project file (pom.xml) into the working directory.
+
+COPY src ./src
+Copy the source code of the application into the working directory.
+
+RUN mvn package -DskipTests
+Build the application using Maven, packaging it into a JAR file while skipping tests to speed up the build process.
+
+Step 2: Runtime
+FROM eclipse-temurin:21-jre-alpine
+Use the Eclipse Temurin JRE 21 Alpine image as the base for the runtime environment, which is lighter than the JDK image.
+
+ENV MYAPP_HOME=/opt/myapp
+WORKDIR $MYAPP_HOME
+Set the same environment variable and working directory for consistency.
+
+COPY --from=myapp-build $MYAPP_HOME/target/*.jar $MYAPP_HOME/myapp.jar
+Copy the built JAR file from the "myapp-build" stage into the runtime image.
+
+ENTRYPOINT ["java", "-jar", "myapp.jar"]
+Define the command to run the application when the container starts, executing the JAR file with Java.
+

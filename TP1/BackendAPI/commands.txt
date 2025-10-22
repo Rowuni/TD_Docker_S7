@@ -1,0 +1,5 @@
+docker build -t backend-api .
+javac Main.java
+docker run backend-api
+
+Result: Hello World!

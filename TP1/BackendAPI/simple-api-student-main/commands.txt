@@ -1,0 +1,38 @@
+# Étape 1 : Créer un réseau Docker pour connecter les conteneurs
+docker network create app-network
+
+# Étape 2 : Construire et démarrer la base de données PostgreSQL
+cd ../../Database
+docker build -t postgres-db .
+docker run -d --name postgres-db --network app-network -p 5432:5432 postgres-db
+
+# Étape 3 : Attendre que la base de données soit prête (environ 10 secondes)
+Start-Sleep -Seconds 10
+
+# Étape 4 : Construire l'image de l'API backend
+cd ../BackendAPI/simple-api-student-main
+docker build -t backend-api .
+
+# Étape 5 : Démarrer l'API backend connectée à la base de données
+docker run -d --name backend-api --network app-network -p 8080:8080 backend-api
+
+# Étape 6 : Attendre que l'API démarre (environ 10 secondes)
+Start-Sleep -Seconds 10
+
+# Étape 7 : Tester l'API
+curl http://localhost:8080/departments/IRC/students
+
+# Autres endpoints à tester :
+# curl http://localhost:8080/departments
+# curl http://localhost:8080/students
+
+# Voir les logs des conteneurs
+# docker logs backend-api
+# docker logs postgres-db
+
+# Arrêter et supprimer les conteneurs
+# docker stop backend-api postgres-db
+# docker rm backend-api postgres-db
+
+# Supprimer le réseau
+# docker network rm app-network

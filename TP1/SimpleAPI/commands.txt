@@ -1,0 +1,9 @@
+# Construction de l'image Docker
+docker build -t simple-api .
+
+# Exécution du conteneur
+docker run -d -p 8080:8080 --name simple-api-container simple-api
+# Test de l'API
+# Dans un autre terminal :
+curl http://localhost:8080/
+curl http://localhost:8080/?name=Clement
