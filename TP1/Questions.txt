@@ -164,3 +164,11 @@ This improves application resilience in production environments.
 Only the httpd service exposes a port to the host machine (80:80).
 The database and backend are only accessible within the Docker network,
 following the principle of least exposure for security.
+
+
+
+
+1-10 Why do we put our images into an online repo?
+
+We put our images into an online repository (like Docker Hub or a private registry) for several reasons.
+It allows easy sharing and distribution of images across different environments and teams, facilitates collaboration, and streamlines the CI/CD process.
