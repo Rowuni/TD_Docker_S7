@@ -89,3 +89,78 @@ Caching: It can cache responses from the backend servers, reducing the load on t
 Security: It can act as an additional layer of security, hiding the details of the backend servers and protecting them from direct exposure to the internet.
 
 Compression: It can compress responses before sending them to clients, reducing bandwidth usage and improving load times.
+
+
+1-6 Why is docker-compose so important?
+
+Docker-compose is important because it simplifies the process of managing multi-container Docker applications.
+With docker-compose, you can define and configure all the services, networks, and volumes needed for your application in a single YAML file.
+
+
+1-7 Document docker-compose most important commands.
+
+docker-compose up -d
+Starts and runs the containers defined in the docker-compose.yml file in detached mode.
+
+docker-compose down
+Stops and removes the containers, networks, and volumes defined in the docker-compose.yml file.
+
+docker-compose logs -f [service_name]
+Displays the logs of all services or a specific service in real-time.
+
+docker-compose build [service_name]
+Builds or rebuilds the services defined in the docker-compose.yml file.
+
+docker-compose ps
+Lists the status of the containers defined in the docker-compose.yml file.
+
+
+1-8 Document your docker-compose file.
+
+1. SERVICE DEPENDENCIES (depends_on)
+Services are started in order based on their dependencies:
+database → backend → httpd
+The 'condition: service_healthy' ensures that a service only starts when its
+dependency is fully operational and passes its health check.
+
+2. HEALTH CHECKS
+Each service has a health check that Docker uses to determine if the service
+is ready to accept connections:
+- database: Uses pg_isready to verify PostgreSQL is accepting connections
+- backend: Uses wget to check if the API endpoint responds
+- httpd: No explicit health check (starts immediately after backend is healthy)
+Health check parameters:
+- interval: How often to run the check
+- timeout: Maximum time to wait for a response
+- retries: Number of consecutive failures before marking as unhealthy
+- start_period: Grace period before health checks start (for slow-starting apps)
+
+3. NETWORKS
+The 'app-network' is a custom bridge network that allows containers to
+communicate with each other using their service names as hostnames.
+Example: The backend connects to 'postgres-db:5432' instead of an IP address.
+
+4. VOLUMES
+The 'db-data' volume provides persistent storage for PostgreSQL data.
+This ensures that database data survives container restarts and removals.
+Without a volume, all data would be lost when the container is removed.
+
+5. ENVIRONMENT VARIABLES
+Environment variables are loaded from the .env file in the same directory.
+This allows sensitive information (passwords, usernames) to be kept separate
+from the docker-compose.yml file and not committed to version control.
+
+6. BUILD CONTEXT
+Each service specifies a build context pointing to the directory containing
+its Dockerfile. Docker Compose will automatically build images if they don't
+exist or if you use the --build flag.
+
+7. RESTART POLICY
+'restart: unless-stopped' ensures containers automatically restart if they
+crash or if the Docker daemon restarts, unless explicitly stopped by the user.
+This improves application resilience in production environments.
+
+8. PORT MAPPING
+Only the httpd service exposes a port to the host machine (80:80).
+The database and backend are only accessible within the Docker network,
+following the principle of least exposure for security.

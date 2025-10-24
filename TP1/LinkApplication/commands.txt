@@ -1,0 +1,23 @@
+# Docker Compose Commands
+
+docker-compose up -d
+
+docker-compose down
+
+docker-compose up -d --build
+
+# Useful commands to monitor the services
+docker-compose logs
+
+
+docker-compose logs backend
+docker-compose logs database
+docker-compose logs httpd
+
+docker-compose ps
+
+curl http://localhost/departments
+curl http://localhost/students
+curl http://localhost/departments/IRC/students
+
+curl http://localhost:8080/departments

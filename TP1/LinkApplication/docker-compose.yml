@@ -1,0 +1,56 @@
+services:
+  database:
+    build: ../Database
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - app-network
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ../BackendAPI/simple-api-student-main
+    container_name: backend-api
+    environment:
+      POSTGRES_URL: ${POSTGRES_URL}
+      POSTGRES_USERNAME: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - app-network
+    depends_on:
+      database: { condition: service_healthy }
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/departments"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  httpd:
+    build: ../HTTP Server
+    container_name: http-server
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    depends_on:
+      backend: { condition: service_healthy }
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local
