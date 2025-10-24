@@ -1,0 +1,62 @@
+# Commandes pour la base de données PostgreSQL
+
+# 1. Construire l'image Docker de la base de données
+docker build -t postgres-db .
+
+# 2. Créer un réseau Docker (si pas déjà fait)
+docker network create app-network
+
+# 3. Démarrer le conteneur PostgreSQL
+docker run -d --name postgres-db --network app-network -p 5432:5432 postgres-db
+
+# 4. Vérifier que le conteneur est bien démarré
+docker ps
+
+# 5. Voir les logs de la base de données
+docker logs postgres-db
+
+# 6. Se connecter à la base de données en ligne de commande
+docker exec -it postgres-db psql -U usr -d db
+
+# 7. Commandes SQL utiles une fois connecté à psql
+# \dt              - Lister toutes les tables
+# \d students      - Décrire la structure de la table students
+# \d departments   - Décrire la structure de la table departments
+# SELECT * FROM departments;
+# SELECT * FROM students;
+# \q               - Quitter psql
+
+# 8. Exécuter une requête SQL directement depuis le terminal
+docker exec -it postgres-db psql -U usr -d db -c "SELECT * FROM departments;"
+docker exec -it postgres-db psql -U usr -d db -c "SELECT * FROM students;"
+
+# 9. Arrêter le conteneur
+docker stop postgres-db
+
+# 10. Redémarrer le conteneur
+docker start postgres-db
+
+# 11. Supprimer le conteneur
+docker rm postgres-db
+
+# 12. Supprimer l'image
+docker rmi postgres-db
+
+# 13. Reconstruire et redémarrer (après modification des scripts SQL)
+docker stop postgres-db
+docker rm postgres-db
+docker build -t postgres-db .
+docker run -d --name postgres-db --network app-network -p 5432:5432 postgres-db
+
+# 14. Inspecter le réseau pour voir les conteneurs connectés
+docker network inspect app-network
+
+# 15. Vérifier les variables d'environnement du conteneur
+docker exec postgres-db env | grep POSTGRES
+
+# Informations de connexion :
+# - Host: localhost (depuis votre machine) ou postgres-db (depuis un autre conteneur)
+# - Port: 5432
+# - Database: db
+# - Username: usr
+# - Password: pwd

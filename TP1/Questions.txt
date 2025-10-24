@@ -74,3 +74,18 @@ Copy the built JAR file from the "myapp-build" stage into the runtime image.
 
 ENTRYPOINT ["java", "-jar", "myapp.jar"]
 Define the command to run the application when the container starts, executing the JAR file with Java.
+
+
+1-5 Why do we need a reverse proxy?
+
+A reverse proxy is needed for several reasons:
+
+Load Balancing: It can distribute incoming traffic across multiple backend servers, improving performance and reliability.
+
+SSL Termination: It can handle SSL encryption and decryption, offloading this resource-intensive process from the backend servers.
+
+Caching: It can cache responses from the backend servers, reducing the load on those servers and improving response times for clients.
+
+Security: It can act as an additional layer of security, hiding the details of the backend servers and protecting them from direct exposure to the internet.
+
+Compression: It can compress responses before sending them to clients, reducing bandwidth usage and improving load times.

@@ -1,0 +1,64 @@
+Command to run for the HTTP Server container:
+
+docker build -t http-server .
+
+docker network create app-network
+
+docker run -d --name http-server --network app-network -p 80:80 http-server
+
+docker ps
+
+
+Useful commands for the HTTP Server container:
+
+
+docker logs http-server
+
+docker logs -f http-server
+
+Stats of the container (CPU, RAM, I/O)
+docker stats http-server
+
+Stats of all containers
+docker stats
+
+Inspect the container (detailed configuration)
+docker inspect http-server
+
+Inspect the container (detailed configuration)
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' http-server
+
+
+
+See the Apache configuration
+docker exec http-server cat /usr/local/apache2/conf/httpd.conf
+
+Stop the container
+docker stop http-server
+
+Restart the container
+docker start http-server
+
+Delete the container
+docker rm http-server
+
+Delete the image
+docker rmi http-server
+
+Rebuild and restart the container
+docker stop http-server
+docker rm http-server
+docker build -t http-server .
+docker run -d --name http-server --network app-network -p 80:80 http-server
+
+Copy a file into the running container
+docker cp index.html http-server:/usr/local/apache2/htdocs/
+
+See the processes running in the container
+docker top http-server
+
+See the disk usage of the container
+docker exec http-server df -h
+
+Inspect the network to see connected containers
+docker network inspect app-network
