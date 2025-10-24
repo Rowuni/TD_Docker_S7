@@ -36,7 +36,7 @@ jobs:
         run: |
           cd TP1/BackendAPI/simple-api-student-main
           ./mvnw -B verify sonar:sonar \
-            -Dsonar.projectKey=tp-docker-project-tp-docker \
+            -Dsonar.projectKey=tp-docker_project-tp-docker \
             -Dsonar.organization=tp-docker \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
@@ -78,5 +78,5 @@ jobs:
           context: ./TP1/HTTP Server
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
           # build on feature branches, push only on main branch
-          
+
           push: ${{ github.ref == 'refs/heads/main' }}
