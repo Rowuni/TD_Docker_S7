@@ -39,7 +39,8 @@ jobs:
             -Dsonar.projectKey=tp-docker_project-tp-docker \
             -Dsonar.organization=tp-docker \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.branch.name=main
 
   # define job to build and publish docker image
   build-and-push-docker-image:
