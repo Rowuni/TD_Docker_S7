@@ -172,3 +172,8 @@ following the principle of least exposure for security.
 
 We put our images into an online repository (like Docker Hub or a private registry) for several reasons.
 It allows easy sharing and distribution of images across different environments and teams, facilitates collaboration, and streamlines the CI/CD process.
+
+2-1 What are testcontainers?
+
+Testcontainers is a Java library that provides lightweight, throwaway instances of common databases, Selenium web browsers, or anything else that can run in a Docker container.
+They are primarily used for integration testing, allowing developers to run tests against real services in isolated environments.
