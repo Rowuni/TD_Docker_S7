@@ -1,0 +1,12 @@
+---
+- name: Deploy frontend container
+  community.docker.docker_container:
+    name: frontend
+    image: "{{ dockerhub_username }}/tp-devops-frontend:latest"
+    state: started
+    restart_policy: always
+    networks:
+      - name: "{{ frontend_network }}"
+    pull: true
+  vars:
+    ansible_python_interpreter: /opt/docker_venv/bin/python

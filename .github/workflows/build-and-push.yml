@@ -41,3 +41,11 @@ jobs:
           context: ./TP1/HTTP Server
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
           push: true
+
+      - name: Build image and push frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./TP1/Frontend
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-frontend:latest
+          push: true
+
