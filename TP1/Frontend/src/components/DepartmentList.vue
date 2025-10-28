@@ -1,6 +1,12 @@
 <template>
   <div class="department-list">
     <a-row type="flex" justify="center">
+      <a-col :span="24">
+        <h1>All Departments</h1>
+        <router-link to="/">
+          <a-button style="margin-bottom: 20px;">← Back to Home</a-button>
+        </router-link>
+      </a-col>
       <a-col :xs="24" :sm="22" :md="12" :lg="8" :xl="5">
         <a-row class="department" v-for="department in departments" :key="department.id">
           <router-link :to="`/departments/${department.name}`">
@@ -25,7 +31,7 @@ export default {
     };
   },
   mounted: function() {
-    fetch(`http://${process.env.VUE_APP_API_URL}/departments`)
+    fetch(`${process.env.VUE_APP_API_URL}/departments`)
       .then(response => response.json())
       .then(data => (this.departments = data));
   }

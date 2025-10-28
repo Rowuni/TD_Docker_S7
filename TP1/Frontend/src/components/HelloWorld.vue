@@ -1,23 +1,39 @@
 <template>
   <div class="hello">
-    <DepartmentList />
+    <h1>Student Management System</h1>
+    <p>
+      Welcome to the student and department management application.
+    </p>
+    <div class="navigation">
+      <router-link to="/departments">
+        <a-button type="primary" size="large">View All Departments</a-button>
+      </router-link>
+    </div>
   </div>
 </template>
 
 <script>
-import DepartmentList from './DepartmentList';
-
 export default {
   name: 'HelloWorld',
   props: {
     msg: String
-  },
-  components: { DepartmentList }
+  }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+h1 {
+  margin: 40px 0 20px;
+  color: #2c3e50;
+}
+p {
+  margin: 20px 0;
+  color: #666;
+}
+.navigation {
+  margin-top: 40px;
+}
 h3 {
   margin: 40px 0 0;
 }
