@@ -1,28 +1,31 @@
 # Build stage
-FROM node:18-alpine AS build
+FROM node:12.16.3-stretch-slim AS build
 
-WORKDIR /app
+WORKDIR /opt/front
 
 # Copy package files
-COPY package*.json ./
+COPY package.json .
+COPY yarn.lock .
 
 # Install dependencies
-RUN npm install --production
+RUN npm install
 
 # Copy source code
-COPY public ./public
-COPY src ./src
+COPY src/ src/
+COPY public/ public/
+COPY babel.config.js .
+COPY .env.production .
 
 # Build the application
 RUN npm run build
 
 # Production stage with nginx
-FROM nginx:alpine
+FROM nginx:1.15.7-alpine
 
 # Copy built files to nginx
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /opt/front/dist /usr/share/nginx/html/
 
-# Copy nginx configuration
+# Copy nginx configuration with API proxy
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
