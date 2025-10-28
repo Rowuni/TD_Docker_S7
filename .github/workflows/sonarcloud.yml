@@ -1,0 +1,38 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+
+jobs:
+  sonarcloud:
+    runs-on: ubuntu-24.04
+    # This job can fail without blocking other workflows
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build and analyze with SonarCloud
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          cd TP1/BackendAPI/simple-api-student-main
+          chmod +x mvnw
+          ./mvnw -B verify sonar:sonar \
+            -Dsonar.projectKey=tp-docker_project-tp-docker \
+            -Dsonar.organization=tp-docker \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.branch.name=main
+        continue-on-error: true
