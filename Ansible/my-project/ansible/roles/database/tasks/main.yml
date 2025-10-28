@@ -1,0 +1,23 @@
+---
+# tasks file for roles/database
+
+# Run PostgreSQL database container
+- name: Run Database Container
+  community.docker.docker_container:
+    name: postgres-db
+    image: "{{ dockerhub_username }}/tp-devops-database:latest"
+    state: started
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ backend_network }}"
+    env:
+      POSTGRES_DB: "{{ postgres_db }}"
+      POSTGRES_USER: "{{ postgres_user }}"
+      POSTGRES_PASSWORD: "{{ postgres_password }}"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U {{ postgres_user }} -d {{ postgres_db }}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  vars:
+    ansible_python_interpreter: /opt/docker_venv/bin/python

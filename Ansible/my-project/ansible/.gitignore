@@ -1,0 +1,20 @@
+# Ansible sensitive files
+group_vars/all.yml
+host_vars/
+*.vault
+*.secret
+
+# Ansible retry files
+*.retry
+
+# Ansible log files
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/

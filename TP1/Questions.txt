@@ -210,3 +210,18 @@ This command gathers and displays facts about the operating system distribution 
 ansible all -m apt -a "name=apache2 state=absent" --become 
 
 This command removes Apache2 from all hosts defined in the inventory file, using elevated privileges.
+
+
+3-2 Document your playbook
+
+The playbook executes 5 roles sequentially: docker, network, database, app, proxy. Each role isolates specific deployment concerns.
+We have for example [docker, network, database, app, proxy]
+It uses variables defined in group_vars/all.yml for sensitive information like database credentials and network names.
+
+
+3-3 Document your docker_container tasks configuration.
+
+The docker_container tasks ensure that each service is properly configured and connected to the appropriate networks. For example, the PostgreSQL container uses a healthcheck to ensure it is ready before dependent services start. It is connected only to the backend-network for isolation.
+The backend API is connected to both networks (backend + frontend) acting as a bridge. Uses SPRING_DATASOURCE_URL to connect to postgres-db via Docker DNS.
+The proxy service exposes port 80 and connects only to frontend-network, preventing direct database access. Uses restart_policy: always for high availability.
+We also have Two isolated networks: backend-network (DB↔API only) and frontend-network (API↔Proxy only). This prevents the proxy from accessing the database directly.

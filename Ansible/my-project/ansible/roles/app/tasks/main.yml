@@ -1,0 +1,19 @@
+---
+# tasks file for roles/app
+
+# Run Backend API container
+- name: Run Backend API Container
+  community.docker.docker_container:
+    name: backend-api
+    image: "{{ dockerhub_username }}/tp-devops-simple-api:latest"
+    state: started
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ backend_network }}"
+      - name: "{{ frontend_network }}"
+    env:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-db:5432/{{ postgres_db }}"
+      SPRING_DATASOURCE_USERNAME: "{{ postgres_user }}"
+      SPRING_DATASOURCE_PASSWORD: "{{ postgres_password }}"
+  vars:
+    ansible_python_interpreter: /opt/docker_venv/bin/python

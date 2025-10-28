@@ -1,0 +1,16 @@
+---
+# tasks file for roles/proxy
+
+# Run HTTP Server (reverse proxy) container
+- name: Run HTTP Server Container
+  community.docker.docker_container:
+    name: httpd-proxy
+    image: "{{ dockerhub_username }}/tp-devops-httpd:latest"
+    state: started
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ frontend_network }}"
+    ports:
+      - "80:80"
+  vars:
+    ansible_python_interpreter: /opt/docker_venv/bin/python
