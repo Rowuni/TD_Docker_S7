@@ -177,3 +177,36 @@ It allows easy sharing and distribution of images across different environments 
 
 Testcontainers is a Java library that provides lightweight, throwaway instances of common databases, Selenium web browsers, or anything else that can run in a Docker container.
 They are primarily used for integration testing, allowing developers to run tests against real services in isolated environments.
+
+
+2-2 For what purpose do we need to use secured variables ?
+
+Secured variables are used to protect sensitive information such as passwords, API keys, and tokens from being exposed in code repositories or logs.
+
+
+2-3 Why did we put needs: build-and-test-backend on this job? Maybe try without this and you will see!
+
+The "needs: build-and-test-backend" directive in a CI/CD pipeline job specifies that the current job depends on the successful completion of the "build-and-test-backend" job.
+This ensures that the current job will only run if the backend build and tests have passed, maintaining the integrity of the deployment process.
+
+
+2-4 For what purpose do we need to push docker images?
+
+Pushing Docker images to a registry allows for easy distribution and deployment of applications across different environments.
+It enables teams to share images, facilitates version control, and supports CI/CD workflows by providing a centralized location for storing and retrieving images.
+
+
+
+3-1 Document your inventory and base commands
+
+ansible all -i inventories/setup.yml -m ping
+
+This command checks the connectivity to all hosts defined in the inventory file.
+
+ansible all -i inventories/setup.yml -m setup -a "filter=ansible_distribution*"
+
+This command gathers and displays facts about the operating system distribution of all hosts defined in the inventory file.
+
+ansible all -m apt -a "name=apache2 state=absent" --become 
+
+This command removes Apache2 from all hosts defined in the inventory file, using elevated privileges.
