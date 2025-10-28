@@ -12,5 +12,6 @@
       - name: "{{ frontend_network }}"
     ports:
       - "80:80"
+    pull: true
   vars:
     ansible_python_interpreter: /opt/docker_venv/bin/python

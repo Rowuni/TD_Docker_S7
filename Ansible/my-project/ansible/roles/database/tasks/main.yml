@@ -19,5 +19,6 @@
       interval: 10s
       timeout: 5s
       retries: 5
+    pull: true
   vars:
     ansible_python_interpreter: /opt/docker_venv/bin/python
