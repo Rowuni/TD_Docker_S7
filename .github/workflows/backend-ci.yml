@@ -1,4 +1,4 @@
-name: SonarCloud Analysis
+name: Backend CI
 
 on:
   push:
@@ -8,9 +8,29 @@ on:
   pull_request:
 
 jobs:
-  sonarcloud:
+  test-backend:
+    name: Run Tests
     runs-on: ubuntu-24.04
-    # This job can fail without blocking other workflows
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build and test with Maven
+        run: |
+          cd TP1/BackendAPI/simple-api-student-main
+          chmod +x mvnw
+          ./mvnw clean verify
+
+  sonarcloud:
+    name: Code Quality Analysis
+    runs-on: ubuntu-24.04
     continue-on-error: true
     steps:
       - name: Checkout code
@@ -23,7 +43,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build and analyze with SonarCloud
+      - name: Analyze with SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |

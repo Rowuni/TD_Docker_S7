@@ -225,3 +225,11 @@ The docker_container tasks ensure that each service is properly configured and c
 The backend API is connected to both networks (backend + frontend) acting as a bridge. Uses SPRING_DATASOURCE_URL to connect to postgres-db via Docker DNS.
 The proxy service exposes port 80 and connects only to frontend-network, preventing direct database access. Uses restart_policy: always for high availability.
 We also have Two isolated networks: backend-network (DB↔API only) and frontend-network (API↔Proxy only). This prevents the proxy from accessing the database directly.
+
+
+3-4 : Is it really safe to deploy automatically every new image on the hub ? explain. What can I do to make it more secure?
+
+Automatically deploying every new image to a public or shared Docker Hub repository can pose security risks, especially if the images contain sensitive information or vulnerabilities. If an image is compromised, it could lead to unauthorized access or exploitation of systems that use that image.
+To make the deployment process more secure, we need to implement measures like image scanning for vulnerabilities before deployment, using private repositories for sensitive images, implementing access controls and authentication for pushing images, and incorporating manual approval steps in the CI/CD pipeline for critical deployments. Additionally, regularly updating base images and dependencies can help mitigate security risks.
+
+

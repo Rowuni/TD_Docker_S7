@@ -10,7 +10,7 @@ on:
 
 jobs:
   deploy-to-production:
-    # Only run if the build workflow succeeded
+    name: Deploy to Server
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-24.04
 
@@ -23,26 +23,26 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ansible
 
-      - name: Set up SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H clement.laatar.takima.cloud >> ~/.ssh/known_hosts
+      - name: Configure SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Create Ansible vault file
-        run: |
-          mkdir -p Ansible/my-project/ansible/group_vars
-          cat > Ansible/my-project/ansible/group_vars/all.yml << EOF
-          postgres_db: ${{ secrets.POSTGRES_DB }}
-          postgres_user: ${{ secrets.POSTGRES_USER }}
-          postgres_password: ${{ secrets.POSTGRES_PASSWORD }}
-          dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
-          backend_network: backend-network
-          frontend_network: frontend-network
-          EOF
+      - name: Add server to known hosts
+        run: ssh-keyscan -H clement.laatar.takima.cloud >> ~/.ssh/known_hosts
 
       - name: Deploy with Ansible
+        env:
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
           cd Ansible/my-project/ansible
-          ansible-playbook -i inventories/setup.yml playbook.yml
+          ansible-playbook -i inventories/setup.yml playbook.yml \
+            -e "postgres_db=$POSTGRES_DB" \
+            -e "postgres_user=$POSTGRES_USER" \
+            -e "postgres_password=$POSTGRES_PASSWORD" \
+            -e "dockerhub_username=$DOCKERHUB_USERNAME" \
+            -e "backend_network=backend-network" \
+            -e "frontend_network=frontend-network"
