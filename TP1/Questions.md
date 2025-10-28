@@ -90,15 +90,13 @@ Docker-compose simplifie la gestion d'applications multi-conteneurs en permettan
 
 ### 1-7 Commandes docker-compose essentielles
 
-| Commande | Description |
-|----------|-------------|
-| `docker-compose up -d` | Démarre les conteneurs en mode détaché |
-| `docker-compose down` | Arrête et supprime les conteneurs, réseaux et volumes |
-| `docker-compose logs -f [service]` | Affiche les logs en temps réel d'un service |
-| `docker-compose build [service]` | Reconstruit les images des services |
-| `docker-compose ps` | Liste l'état des conteneurs définis |
-| `docker-compose exec [service] [cmd]` | Exécute une commande dans un conteneur en cours |
-| `docker-compose restart [service]` | Redémarre un ou plusieurs services |
+`docker-compose up -d` : Démarre les conteneurs en mode détaché
+`docker-compose down` : Arrête et supprime les conteneurs, réseaux et volumes
+`docker-compose logs -f [service]` : Affiche les logs en temps réel d'un service
+`docker-compose build [service]` : Reconstruit les images des services
+`docker-compose ps` : Liste l'état des conteneurs définis
+`docker-compose exec [service] [cmd]` : Exécute une commande dans un conteneur en cours
+`docker-compose restart [service]` : Redémarre un ou plusieurs services
 
 
 ### 1-8 Documentation du fichier docker-compose
@@ -261,16 +259,16 @@ Variables sensibles externalisées dans `group_vars/all.yml`.
 - Le proxy ne peut pas accéder directement à la base de données
 
 
-### 3-4 Sécurité du déploiement automatique
+### 3-4 Est ce que c'est sécurisé de déployer chaque image sur Docker Hub ?
 
-**Risques du déploiement automatique :**
+**Pas vraiment car il y a des risques du déploiement automatique :**
 - Absence de validation humaine avant production
 - Déploiement immédiat de vulnérabilités potentielles
 - Pas de test en environnement de staging
 - Changements cassants non détectés
 - Compromission de dépendances déployée automatiquement
 
-**Mesures de sécurisation recommandées :**
+**Les mesures de sécurisation recommandées sont :**
 
 1. **Environnement de staging** : Déploiement intermédiaire avant production
 2. **Approval gate manuel** : Validation humaine requise via GitHub Environments
@@ -282,5 +280,6 @@ Variables sensibles externalisées dans `group_vars/all.yml`.
 8. **Blue-Green deployment** : Bascule progressive du trafic
 9. **Fenêtre de déploiement** : Limitation aux heures ouvrées pour monitoring
 10. **Audit et logs** : Traçabilité complète des déploiements
+
 
 
